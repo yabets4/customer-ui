@@ -1,0 +1,33 @@
+const MinimalTable = ({ columns, data }) => {
+  return (
+    <div className="overflow-x-auto rounded-xl shadow-md border border-gray-200 dark:border-gray-700">
+      <table className="min-w-full bg-white dark:bg-[#023436] text-sm text-gray-700 dark:text-white">
+        <thead className="bg-gray-100 dark:bg-[#03B5AA] text-left uppercase text-xs font-semibold">
+          <tr>
+            {columns.map((col, index) => (
+              <th key={index} className="px-4 py-3 whitespace-nowrap">
+                {col}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {data.map((row, rIdx) => (
+            <tr
+              key={rIdx}
+              className="border-t border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-[#024646]"
+            >
+              {row.map((cell, cIdx) => (
+                <td key={cIdx} className="px-4 py-3 whitespace-nowrap">
+                  {cell}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
+export default MinimalTable;

@@ -1,0 +1,116 @@
+@import "tailwindcss";
+
+
+
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+.animate-scaleIn {
+  animation: scaleIn 0.3s ease-out forwards;
+}
+
+
+/* index.css */
+
+@import "tailwindcss";
+
+/* ✅ CSS‑first customization using @theme */
+@theme {
+  /* Define brand‑specific colors */
+  --color-primary: #2563eb;
+  --color-secondary: #f59e0b;
+
+  /* Add custom breakpoints if needed */
+  --breakpoint-lg: 64rem;      /* ≈1024px */
+  --breakpoint-xl: 80rem;      /* ≈1280px */
+
+  /* Custom font */
+  --font-sans: Satoshi, sans-serif;
+}
+
+/* Optional: Add global typography overrides or plugins */
+@layer base {
+  html {
+    font-family: var(--font-sans);
+  }
+}
+
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-down {
+  animation: fadeInDown 0.3s ease-out forwards;
+}
+
+
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #4a5568 #2d3748; 
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #2d3748;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #4a5568;
+  border-radius: 10px;
+  border: 2px solid #2d3748;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-down {
+  animation: fadeInDown 0.3s ease-out forwards;
+}
+
+
+@keyframes bounceIn {
+  0% {
+    transform: scale(0.1);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animate-bounce-in {
+  animation: bounceIn 0.6s ease-out;
+}
