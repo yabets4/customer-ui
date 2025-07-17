@@ -6,12 +6,15 @@ import Input from '../../../components/ui/input';
 import LoadingSpinner from '../../../components/ui/LoadingSpinner';
 import ModalWithForm from '../../../components/ui/modal';
 import {
-  Plus, Search, Edit, Trash2, Eye, SortAsc, SortDesc, Wrench, Factory, MapPin, Calendar, CheckCircle, XCircle
+  Plus, Search, Edit, Trash2, Eye, SortAsc, SortDesc, Wrench, XCircle, CheckCircle
 } from 'lucide-react';
 
 // --- Mock Data for Tools & Machinery ---
 // This represents your in-memory collection of tools and machinery.
-const mockToolsMachinery = [
+// IMPORTANT: In a real application, this data would come from an API,
+// and you would manage it via a state management solution or fetched data.
+// For this mock, we'll ensure updates happen via state, not direct modification.
+let mockToolsMachineryData = [ // Renamed to avoid confusion with the state variable
   {
     id: 'TLM001',
     assetId: 'MAC-CNC-001',
@@ -106,6 +109,7 @@ const mockToolsMachinery = [
 
 const ToolMachineListPage = () => {
   const navigate = useNavigate();
+  // Initialize state with a copy of the mock data
   const [toolsMachinery, setToolsMachinery] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -122,7 +126,8 @@ const ToolMachineListPage = () => {
       try {
         // Simulate network delay
         await new Promise(resolve => setTimeout(resolve, 500));
-        setToolsMachinery(mockToolsMachinery);
+        // Set the initial state with a copy of the mock data
+        setToolsMachinery([...mockToolsMachineryData]);
       } catch (err) {
         setError('Failed to load tools and machinery. Please try again.');
         console.error('Error fetching tools/machinery:', err);
@@ -157,17 +162,17 @@ const ToolMachineListPage = () => {
 
         // Handle date comparisons
         if (sortConfig.key.includes('Date')) {
-            const dateA = aValue ? new Date(aValue) : null;
-            const dateB = bValue ? new Date(bValue) : null;
-            if (dateA && dateB) {
-                return sortConfig.direction === 'ascending' ? dateA.getTime() - dateB.getTime() : dateB.getTime() - dateA.getTime();
-            }
-            // Handle null dates: nulls typically go to end
-            if (dateA === null && dateB !== null) return sortConfig.direction === 'ascending' ? 1 : -1;
-            if (dateA !== null && dateB === null) return sortConfig.direction === 'ascending' ? -1 : 1;
-            return 0; // Both are null
+          const dateA = aValue ? new Date(aValue) : null;
+          const dateB = bValue ? new Date(bValue) : null;
+          if (dateA && dateB) {
+            return sortConfig.direction === 'ascending' ? dateA.getTime() - dateB.getTime() : dateB.getTime() - dateA.getTime();
+          }
+          // Handle null dates: nulls typically go to end
+          if (dateA === null && dateB !== null) return sortConfig.direction === 'ascending' ? 1 : -1;
+          if (dateA !== null && dateB === null) return sortConfig.direction === 'ascending' ? -1 : 1;
+          return 0; // Both are null
         }
-        
+
         // Handle string/number comparisons
         if (aValue < bValue) {
           return sortConfig.direction === 'ascending' ? -1 : 1;
@@ -208,12 +213,14 @@ const ToolMachineListPage = () => {
         // Simulate API call for deletion
         await new Promise(resolve => setTimeout(resolve, 500));
 
-        // Update the mock data (in a real app, you'd send a DELETE request)
-        const updatedToolsMachinery = mockToolsMachinery.filter(item => item.id !== itemToDelete.id);
-        // This is crucial: re-assigning mockToolsMachinery to update the source
-        // In a real app, this would be a state update from fetched data.
-        mockToolsMachinery = updatedToolsMachinery; 
-        setToolsMachinery(updatedToolsMachinery); 
+        // Update the state using setToolsMachinery
+        // This is the key correction: you update the component's state,
+        // not the original mock data array directly.
+        const updatedToolsMachinery = toolsMachinery.filter(item => item.id !== itemToDelete.id);
+        setToolsMachinery(updatedToolsMachinery);
+
+        // In a real application, you would also likely update your actual backend
+        // mockToolsMachineryData = updatedToolsMachinery; // Only if you want subsequent loads to reflect the change
 
         setIsDeleteModalOpen(false);
         setItemToDelete(null);
@@ -240,12 +247,11 @@ const ToolMachineListPage = () => {
   const isMaintenanceOverdue = (nextMaintenanceDate) => {
     if (!nextMaintenanceDate) return false;
     const today = new Date();
-    today.setHours(0,0,0,0); // Normalize to start of day
+    today.setHours(0, 0, 0, 0); // Normalize to start of day
     const maintenanceDate = new Date(nextMaintenanceDate);
-    maintenanceDate.setHours(0,0,0,0); // Normalize to start of day
+    maintenanceDate.setHours(0, 0, 0, 0); // Normalize to start of day
     return maintenanceDate < today;
   };
-
 
   if (loading) {
     return (
@@ -358,15 +364,15 @@ const ToolMachineListPage = () => {
                       {tool.location}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
-                        {tool.nextMaintenanceDate ? (
-                            <div className={`flex items-center ${isMaintenanceOverdue(tool.nextMaintenanceDate) ? 'text-red-600 font-bold' : 'text-gray-500 dark:text-gray-300'}`}>
-                                {isMaintenanceOverdue(tool.nextMaintenanceDate) && <XCircle className="w-4 h-4 mr-1" />}
-                                {!isMaintenanceOverdue(tool.nextMaintenanceDate) && <CheckCircle className="w-4 h-4 mr-1 text-green-500" />}
-                                {tool.nextMaintenanceDate}
-                            </div>
-                        ) : (
-                            <span className="text-gray-400">N/A</span>
-                        )}
+                      {tool.nextMaintenanceDate ? (
+                        <div className={`flex items-center ${isMaintenanceOverdue(tool.nextMaintenanceDate) ? 'text-red-600 font-bold' : 'text-gray-500 dark:text-gray-300'}`}>
+                          {isMaintenanceOverdue(tool.nextMaintenanceDate) && <XCircle className="w-4 h-4 mr-1" />}
+                          {!isMaintenanceOverdue(tool.nextMaintenanceDate) && <CheckCircle className="w-4 h-4 mr-1 text-green-500" />}
+                          {tool.nextMaintenanceDate}
+                        </div>
+                      ) : (
+                        <span className="text-gray-400">N/A</span>
+                      )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex space-x-2">
